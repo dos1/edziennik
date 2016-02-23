@@ -1,0 +1,11 @@
+<h1>Hello, world! :)</h1>
+
+{% if teachers %}
+    <ul>
+    {% for teacher in teachers %}
+        <li>{{ teacher.name }} {{ teacher.surname }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No teachers in your school :(</p>
+{% endif %}

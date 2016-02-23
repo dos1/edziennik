@@ -16,6 +16,10 @@ class StudentClass(models.Model):
     tutor = models.ForeignKey(Teacher, related_name="pupil")
     teachers = models.ManyToManyField(Teacher)
 
+    class Meta:
+        verbose_name = "class"
+        verbose_name_plural = "classes"
+
 class Student(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
