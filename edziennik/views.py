@@ -36,15 +36,15 @@ def students(request, teacher_id):
     delete = request.POST.get('delete_id')
     if delete is not None:
         cursor = connection.cursor()
-        cursor.execute("DELETE FROM edziennik_student WHERE id = " + delete)
+        cursor.execute("DELETE FROM edziennik_student WHERE id = %s", [delete])
         success = True
     
     search = request.POST.get('search')
     search_sql = ""
     if search:
-        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE '%%"+search+"%%'"
+        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE %s"
     
-    student_list = Student.objects.raw("SELECT edziennik_student.* FROM edziennik_student, edziennik_studentclass WHERE edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+" ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name")
+    student_list = Student.objects.raw("SELECT edziennik_student.* FROM edziennik_student, edziennik_studentclass WHERE edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+" ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name", ['%'+search+'%'] if search else [])
     
     return render(request, 'students.html', {'teacher': getTeacher(teacher_id), 'students': student_list, 'all': True, 'search': search or '', 'success': success})
 
@@ -52,9 +52,9 @@ def myStudents(request, teacher_id):
     search = request.POST.get('search')
     search_sql = ""
     if search:
-        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE '%%"+search+"%%'"
+        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE %s"
     
-    student_list = Student.objects.raw("SELECT DISTINCT edziennik_student.*, edziennik_studentclass.* FROM edziennik_student, edziennik_studentclass, edziennik_lesson WHERE (edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+") AND (edziennik_studentclass.tutor_id = "+teacher_id+" OR (edziennik_lesson.teacher_id = "+teacher_id+" AND edziennik_lesson.student_class_id = edziennik_studentclass.id)) ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name")
+    student_list = Student.objects.raw("SELECT DISTINCT edziennik_student.*, edziennik_studentclass.* FROM edziennik_student, edziennik_studentclass, edziennik_lesson WHERE (edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+") AND (edziennik_studentclass.tutor_id = "+teacher_id+" OR (edziennik_lesson.teacher_id = "+teacher_id+" AND edziennik_lesson.student_class_id = edziennik_studentclass.id)) ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name", ['%'+search+'%'] if search else [])
         
     return render(request, 'students.html', {'teacher': getTeacher(teacher_id), 'students': student_list, 'all': False, 'search': search or ''})
 
@@ -63,7 +63,7 @@ def oneClass(request, teacher_id, class_id):
     success = None
     if request.POST.get('tutor'):
         cursor = connection.cursor()
-        cursor.execute("UPDATE edziennik_studentclass  SET tutor_id = " + request.POST['tutor'] + " WHERE id = " + class_id)
+        cursor.execute("UPDATE edziennik_studentclass  SET tutor_id = %s WHERE id = " + class_id, [request.POST['tutor']])
         success = True
     
     class_list = StudentClass.objects.raw("SELECT * FROM edziennik_studentclass WHERE id = " + class_id)
