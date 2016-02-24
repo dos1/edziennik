@@ -2,31 +2,19 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Edziennik</title>
+<title>eDziennik</title>
 <link rel="stylesheet" type="text/css" href="/static/semantic.min.css">
+<script src="/static/jquery.min.js"></script>
 <script src="/static/semantic.min.js"></script>
 </head>
 <body>
 
 <div class="ui blue inverted menu">
-  <a href="/" class="item">eDziennik</a>
+  <a href="/{{teacher.id}}/" class="item" style="font-weight: bold">eDziennik</a>
+  <span class="item"> {{ teacher.name }} {{ teacher.surname}}</span>
+  <div class="menu right">
+    <a href="/" class="item">Wyloguj</a>  
+  </div>
 </div>
 
-<div class="ui grid">
-  <div class="three wide column">
-    <div class="ui vertical fluid tabular menu">
-      <a class="item active">
-        Bio
-      </a>
-      <a class="item">
-        Pics
-      </a>
-      <a class="item">
-        Companies
-      </a>
-      <a class="item">
-        Links
-      </a>
-    </div>
-  </div>
-  <div class="thirteen wide column">
+

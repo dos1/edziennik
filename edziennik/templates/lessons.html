@@ -1,0 +1,39 @@
+{% include "header.html" %}
+<div class="ui grid">
+  <div class="three wide stretched column">
+    <div class="ui vertical fluid tabular menu">
+      <a class="item" href="/{{teacher.id}}/">
+        Twój panel
+      </a>
+      <a class="item active" href="/{{teacher.id}}/lessons/">
+        Lekcje
+      </a>
+      <a class="item" href="/{{teacher.id}}/classes/">
+        Klasy
+      </a>
+      <a class="item" href="/{{teacher.id}}/students/">
+        Uczniowie
+      </a>
+    </div>
+  </div>
+  <div class="thirteen wide column">
+  <a href="create/" class="ui button primary">Rozpocznij nową lekcję</a>
+
+
+    <div class="ui middle aligned celled list">
+    {% for lesson in lessons %}
+        <a href="{{ lesson.id }}/" class="item">
+          <div class="content">
+      <div class="header">{{ lesson.subject.name }} ({{ lesson.student_class.name}})</div>
+      {{ lesson.date }}
+    </div>
+        </a>
+    {% endfor %}
+    </div>
+
+
+</div>
+</div>
+{% include "footer.html" %}
+
+

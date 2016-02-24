@@ -3,11 +3,17 @@ from django.db import models
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
+    
+    def __str__(self):
+        return 'Subject: ' + self.name
 
 class Teacher(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
+    
+    def __str__(self):
+        return 'Teacher: ' + self.surname + ' ' + self.name
 
 class StudentClass(models.Model):
     id = models.AutoField(primary_key=True)
@@ -15,6 +21,9 @@ class StudentClass(models.Model):
     creation_year = models.DateField()
     tutor = models.ForeignKey(Teacher, related_name="pupil")
     teachers = models.ManyToManyField(Teacher)
+    
+    def __str__(self):
+        return 'Class ' + self.name + ' ('+str(self.creation_year)+')'
 
     class Meta:
         verbose_name = "class"
@@ -24,7 +33,10 @@ class Student(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
-    class_member = models.OneToOneField(StudentClass)
+    class_member = models.ForeignKey(StudentClass)
+    
+    def __str__(self):
+        return 'Student: ' + self.surname + ' ' + self.name + ' (' + self.class_member.name + ')'
 
 class Lesson(models.Model):
     id = models.AutoField(primary_key=True)
@@ -32,6 +44,9 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher)
     student_class = models.ForeignKey(StudentClass)
     date = models.DateTimeField()
+    
+    def __str__(self):
+        return 'Lesson ' + self.subject.name + ' in ' + self.student_class.name + ' at ' + str(self.date)
 
 class Grade(models.Model):
     GRADES = (
@@ -49,6 +64,9 @@ class Grade(models.Model):
     weight = models.FloatField()
     value = models.DecimalField(decimal_places=1, max_digits=1, choices=GRADES)
     comment = models.TextField()
+    
+    def __str__(self):
+        return 'Grade ' + value + ' for ' + str(self.student) + ' on ' + str(self.lesson)
 
 class Attendance(models.Model):
     id = models.AutoField(primary_key=True)

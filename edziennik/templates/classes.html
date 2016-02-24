@@ -1,0 +1,50 @@
+{% include "header.html" %}
+<div class="ui grid">
+  <div class="three wide stretched column">
+    <div class="ui vertical fluid tabular menu">
+      <a class="item" href="/{{teacher.id}}/">
+        Twój panel
+      </a>
+      <a class="item" href="/{{teacher.id}}/lessons/">
+        Lekcje
+      </a>
+      <a class="item active" href="/{{teacher.id}}/classes/">
+        Klasy
+      </a>
+      <a class="item" href="/{{teacher.id}}/students/">
+        Uczniowie
+      </a>
+    </div>
+  </div>
+  <div class="thirteen wide column">
+  
+{% if all %}
+<h2 class="ui header">Wszystkie klasy</h2>
+<a href="my/" class="ui primary button">Pokaż tylko moje klasy</a>
+{% else %}
+<h2 class="ui header">Moje klasy</h2>
+<a href="../" class="ui primary button">Pokaż wszystkie klasy</a>
+
+{% endif %}
+  
+  
+{% if num_classes != 0 %}
+    <div class="ui middle aligned celled list">
+    {% for class in classes %}
+        <a href="{{ all | yesno:",../" }}{{ class.id }}/" class="item">
+          <div class="content">
+      <div class="header">Klasa {{ class.name }} ({{ class.creation_year | date:"Y" }})</div>
+      {% if all %}Wychowawca: {{ class.tutor.name }} {{ class.tutor.surname }}{% endif %}
+    </div>
+        </a>
+    {% endfor %}
+    </div>
+{% else %}
+    <p class="ui warning message">Nie jesteś wychowawcą żadnej z klas!</p>
+{% endif %}
+
+</div>
+</div>
+{% include "footer.html" %}
+
+

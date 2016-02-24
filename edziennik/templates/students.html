@@ -1,0 +1,65 @@
+{% include "header.html" %}
+<div class="ui grid">
+  <div class="three wide stretched column">
+    <div class="ui vertical fluid tabular menu">
+      <a class="item" href="/{{teacher.id}}/">
+        Twój panel
+      </a>
+      <a class="item" href="/{{teacher.id}}/lessons/">
+        Lekcje
+      </a>
+      <a class="item" href="/{{teacher.id}}/classes/">
+        Klasy
+      </a>
+      <a class="item active" href="/{{teacher.id}}/students/">
+        Uczniowie
+      </a>
+    </div>
+  </div>
+  <div class="thirteen wide column">
+    <form method="POST">
+{% if all %}
+<h2 class="ui header">Wszyscy uczniowie</h2>
+<a href="my/" class="ui primary button">Pokaż tylko moich uczniów</a>
+{% else %}
+<h2 class="ui header">Moi uczniowie</h2>
+<a href="../" class="ui primary button">Pokaż wszystkich uczniów</a>
+
+{% endif %}
+  <a href="create/" class="ui button secondary">Dodaj nowego ucznia</a>
+  
+<div class="ui icon input">
+  <input type="text" placeholder="Wyszukaj..." name="search" value="{{ search }}">
+  <i class="search icon"></i>
+  </div>
+    {% csrf_token %}
+
+</form>
+
+{% if search %}
+<p class="ui info message">Wyniki wyszukiwania dla frazy <strong>{{ search }}</strong></p>
+{% endif %}
+
+{% if students %}
+    <div class="ui middle aligned celled list">
+    {% for student in students %}
+        <a href="{{ all | yesno:",../" }}{{ student.id }}/" class="item">
+          <div class="content">
+      <div class="header">{{ student.name }} {{ student.surname }}</div>
+      <strong>Klasa {{ student.class_member.name }}</strong>, wychowawca: {{ student.class_member.tutor.name }} {{ student.class_member.tutor.surname }}
+    </div>
+        </a>
+    {% endfor %}
+    </div>
+        {% else %}
+{% if search %}
+<p class="ui warning message">Brak wyników wyszukiwania!</p>
+{% endif %}
+{% endif %}
+
+
+</div>
+</div>
+{% include "footer.html" %}
+
+

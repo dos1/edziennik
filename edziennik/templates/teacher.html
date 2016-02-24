@@ -1,27 +1,24 @@
 {% include "header.html" %}
-
 <div class="ui grid">
   <div class="three wide stretched column">
     <div class="ui vertical fluid tabular menu">
-      <a class="item active">
+      <a class="item active" href="/{{teacher.id}}/">
         Twój panel
       </a>
-      <a class="item">
+      <a class="item" href="/{{teacher.id}}/lessons/">
         Lekcje
       </a>
-      <a class="item">
+      <a class="item" href="/{{teacher.id}}/classes/">
         Klasy
       </a>
-      <a class="item">
+      <a class="item" href="/{{teacher.id}}/students/">
         Uczniowie
       </a>
     </div>
   </div>
   <div class="thirteen wide column">
-
-<h1>Witaj, Anonimie Anonimowy!</h1>
-
-
+  
+<h1 class="ui header">Witaj, {{ teacher.name}} {{ teacher.surname }}!</h1>
 
 <div class="ui two cards" style="text-align: center">
   <a href="lessons/create/" class="blue card">
@@ -67,23 +64,6 @@
         </a>
 </div>
 
-<div class="ui teachers small modal">
-
-<div class="header">Nauczycielu, zaloguj się!</div>
-<div class="content">
-{% if teachers %}
-    <div class="ui middle aligned divided list">
-    {% for teacher in teachers %}
-        <a href="/{{ teacher.id }}" class="item">{{ teacher.name }} {{ teacher.surname }}</a>
-    {% endfor %}
-    </div>
-{% else %}
-    <p>No teachers in your school :(</p>
-{% endif %}
-</div>
-</div>
-
-<script>$('.ui.modal').modal({blurring: true, closable: false}).modal('show');</script>
 </div>
 </div>
 {% include "footer.html" %}
