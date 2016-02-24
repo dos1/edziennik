@@ -1,0 +1,73 @@
+{% include "header.html" %}
+<div class="ui grid">
+  <div class="three wide stretched column">
+    <div class="ui vertical fluid tabular menu">
+      <a class="item" href="/{{teacher.id}}/">
+        Twój panel
+      </a>
+      <a class="item" href="/{{teacher.id}}/lessons/">
+        Lekcje
+      </a>
+      <a class="item active" href="/{{teacher.id}}/classes/">
+        Klasy
+      </a>
+      <a class="item" href="/{{teacher.id}}/students/">
+        Uczniowie
+      </a>
+    </div>
+  </div>
+  <div class="thirteen wide column">
+  
+<h2 class="ui header">Informacje o klasie</h2>
+<br/>
+<a href="../" class="ui button">Powrót</a>
+<div class="ui segment">
+<p class="ui header">Klasa {{ class.name }}</p>
+<p>Rok założenia: {{ class.creation_year|date:"Y" }}</p>
+<p>Wychowawca: {{ class.tutor.name }} {{ class.tutor.surname }}</p>
+<p>Uczniowie: </p>
+
+{% if students %}
+    <div class="ui middle aligned celled list">
+    {% for student in students %}
+        <a href="../../students/{{ student.id }}/" class="item">
+          <div class="content">
+      <div class="header">{{ student.name }} {{ student.surname }}</div>
+    </div>
+        </a>
+    {% endfor %}
+    </div>
+{% endif %}
+
+</div>
+
+{% if success %}
+<div class="ui success message">Operacja zakończona pomyślnie!</div>
+{% endif %}
+<div class="ui segment">
+<p class="ui header">Wychowawca</p>
+<form method="POST">
+{% if teachers %}
+    <div class="ui search selection dropdown">
+    <input type="hidden" name="tutor" />
+    <i class="dropdown icon"></i>
+    <div class="default text">{{ class.tutor.name }} {{ class.tutor.surname }}</div>
+    <div class="menu">
+    {% for teacher in teachers %}
+        <div class="item" data-value="{{ teacher.id }}">{{ teacher.name }} {{ teacher.surname }}</div>
+    {% endfor %}
+    </div>
+    </div>
+{% endif %}
+    {% csrf_token %}
+
+    <input type="submit" class="ui primary button" />
+</form>
+    </div>
+
+</div>
+</div>
+
+{% include "footer.html" %}
+
+

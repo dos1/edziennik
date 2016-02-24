@@ -1,0 +1,134 @@
+{% include "header.html" %}
+<div class="ui grid">
+  <div class="three wide stretched column">
+    <div class="ui vertical fluid tabular menu">
+      <a class="item" href="/{{teacher.id}}/">
+        Twój panel
+      </a>
+      <a class="item" href="/{{teacher.id}}/lessons/">
+        Lekcje
+      </a>
+      <a class="item" href="/{{teacher.id}}/classes/">
+        Klasy
+      </a>
+      <a class="item active" href="/{{teacher.id}}/students/">
+        Uczniowie
+      </a>
+    </div>
+  </div>
+  <div class="thirteen wide column">
+  
+  
+{% if new %}
+<h2 class="ui header">Dodaj nowego ucznia</h2>
+<a href="../" class="ui button">Powrót</a>
+{% else %}
+<h2 class="ui header">Informacje o uczniu</h2>
+<a href="../" class="ui button">Powrót</a>
+<div class="ui segment">
+  
+  <p class="ui header">{{ student.name }} {{ student.surname }}</p>
+  <p>Klasa: <a href="/{{ teacher.id }}/classes/{{ student.class_member.id }}">{{ student.class_member.name }}</a></p>
+  <p>Wychowawca: {{ student.class_member.tutor.name }} {{ student.class_member.tutor.surname }}</p>
+  <p>Oceny:</p>
+  <p>Obecność:</p>
+  
+</div>
+{% endif %}
+{% if success %}
+<div class="ui success message">Operacja zakończona pomyślnie!</div>
+{% endif %}
+{% if error %}
+<div class="ui error message">Nie wypełniono wszystkich pól!</div>
+{% endif %}
+<div class="ui segment">
+<p class="ui header">{{ new | yesno:"Dane ucznia,Modyfikacja" }}</p>
+<form method="POST">
+
+<div class="ui form">
+
+<div class="three fields">
+
+<div class="field">
+<label>Imię</label>
+<input type="text" required name="name" value="{{ student.name }}"/>
+</div>
+</div>
+<div class="three fields">
+
+<div class="field">
+<label>Nazwisko</label>
+<input type="text" required name="surname" value="{{ student.surname }}"/>
+</div>
+
+
+
+</div>
+<div class="three fields">
+
+{% if classes %}
+<div class="field">
+<label>Klasa</label>
+    <div class="ui selection dropdown">
+    <input type="hidden" name="class" />
+    <i class="dropdown icon"></i>
+    <div class="default text">{{ student.class_member.name }}</div>
+    <div class="menu">
+    {% for class in classes %}
+        <div class="item" data-value="{{ class.id }}">{{ class.name }}</div>
+    {% endfor %}
+    </div>
+    </div>
+    </div>
+{% endif %}
+    {% csrf_token %}
+
+</div>
+    <input type="submit" class="ui primary button" />
+</form>
+</div>
+
+</div>
+{% if not new %}
+<div class="ui red segment">
+<p class="ui header">Danger Zone™</p>
+<form method="POST" action="../" class="removal">
+<input type="hidden" name="delete_id" value="{{ student.id }}" />
+<input name="delete" type="submit" class="ui negative button" value="Usuń ucznia" onclick="$('.basic.removal.modal').modal({onApprove: function() { $('form.removal').submit(); }} ).modal('show'); return false;"/>
+    {% csrf_token %}
+</form>
+</div>
+{% endif %}
+</div>
+</div>
+
+<div class="ui basic removal modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Jesteś pewien?
+  </div>
+  <div class="image content">
+    <div class="image">
+      <i class="trash icon"></i>
+    </div>
+    <div class="description">
+      <p>Czy jesteś pewien, że chcesz usunąć ucznia {{ student.name }} {{ student.surname }} z bazy danych?</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="two ui inverted buttons">
+      <div class="ui red basic deny inverted button">
+        <i class="remove icon"></i>
+        Nie
+      </div>
+      <div class="ui green basic approve inverted button">
+        <i class="checkmark icon"></i>
+        Tak
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}
+
+

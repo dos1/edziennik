@@ -36,6 +36,10 @@
 
 </form>
 
+{% if success %}
+<div class="ui success message">Operacja zakończona pomyślnie!</div>
+{% endif %}
+
 {% if search %}
 <p class="ui info message">Wyniki wyszukiwania dla frazy <strong>{{ search }}</strong></p>
 {% endif %}
