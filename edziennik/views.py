@@ -21,27 +21,29 @@ def lessons(request, teacher_id):
     return render(request, 'lessons.html', {'teacher': getTeacher(teacher_id), 'lessons': lesson_list})
 
 def classes(request, teacher_id):
-    class_list = StudentClass.objects.raw("SELECT * FROM edziennik_studentclass ORDER BY creation_year DESC")
+    class_list = StudentClass.objects.raw("SELECT * FROM edziennik_studentclass ORDER BY creation_year DESC, name")
     return render(request, 'classes.html', {'teacher': getTeacher(teacher_id), 'classes': class_list, 'all': True})
 
 def myClasses(request, teacher_id):
-    class_list = StudentClass.objects.raw("SELECT * FROM edziennik_studentclass WHERE tutor_id = " + teacher_id + " ORDER BY creation_year DESC")
+    class_list = StudentClass.objects.raw("SELECT * FROM edziennik_studentclass WHERE tutor_id = " + teacher_id + " ORDER BY creation_year DESC, name")
     return render(request, 'classes.html', {'teacher': getTeacher(teacher_id), 'classes': class_list, 'num_classes': len(list(class_list)), 'all': False})
 
 def students(request, teacher_id):
     search = request.POST.get('search')
-    if not search:
-        student_list = Student.objects.raw("SELECT * FROM edziennik_student")
-    else:
-        student_list = Student.objects.raw("SELECT * FROM edziennik_student WHERE (name||' '||surname) ILIKE '%%"+search+"%%'")
-    print(student_list)
+    search_sql = ""
+    if search:
+        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE '%%"+search+"%%'"
+    
+    student_list = Student.objects.raw("SELECT edziennik_student.* FROM edziennik_student, edziennik_studentclass WHERE edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+" ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name")
+    
     return render(request, 'students.html', {'teacher': getTeacher(teacher_id), 'students': student_list, 'all': True, 'search': search or ''})
 
 def myStudents(request, teacher_id):
     search = request.POST.get('search')
-    if not search:
-        student_list = Student.objects.raw("SELECT * FROM edziennik_student")
-    else:
-        student_list = Student.objects.raw("SELECT * FROM edziennik_student WHERE (name||' '||surname) ILIKE '%%"+search+"%%'")
-    print(student_list)
+    search_sql = ""
+    if search:
+        search_sql = "AND (edziennik_student.name||' '||edziennik_student.surname) ILIKE '%%"+search+"%%'"
+    
+    student_list = Student.objects.raw("SELECT DISTINCT edziennik_student.*, edziennik_studentclass.* FROM edziennik_student, edziennik_studentclass, edziennik_lesson WHERE (edziennik_studentclass.id = edziennik_student.class_member_id "+search_sql+") AND (edziennik_studentclass.tutor_id = "+teacher_id+" OR (edziennik_lesson.teacher_id = "+teacher_id+" AND edziennik_lesson.student_class_id = edziennik_studentclass.id)) ORDER BY edziennik_studentclass.creation_year DESC, edziennik_studentclass.name, edziennik_student.surname, edziennik_student.name")
+        
     return render(request, 'students.html', {'teacher': getTeacher(teacher_id), 'students': student_list, 'all': False, 'search': search or ''})
